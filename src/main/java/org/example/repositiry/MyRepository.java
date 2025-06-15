@@ -1,8 +1,10 @@
 package org.example.repositiry;
 
-import org.example.data.MyPerson;
+import org.example.data.*;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -13,17 +15,13 @@ import java.util.concurrent.atomic.AtomicLong;
  * No database is used in this release.
  */
 public class MyRepository {
-    private static final Map<Long, MyPerson> MY_PERSON_STORE = new ConcurrentHashMap<>();
+    private static final Map<Long, Player> MY_PERSON_STORE = new ConcurrentHashMap<>();
     private static final AtomicLong COUNTER = new AtomicLong();
 
     public static long addPerson(String firstName, String lastName) {
-        MyPerson person = new MyPerson(COUNTER.incrementAndGet(), firstName, lastName);
+        Player person = new Player(COUNTER.incrementAndGet(), firstName, lastName);
         MY_PERSON_STORE.put(person.id(), person);
         return person.id();
-    }
-
-    public static Collection<MyPerson> list() {
-        return MY_PERSON_STORE.values();
     }
 
     public static void removeById(long id) {
@@ -34,7 +32,21 @@ public class MyRepository {
         return MY_PERSON_STORE.size();
     }
 
-    public static MyPerson get(Long id) {
-        return MY_PERSON_STORE.get(id);
+    public static List<Game> gameList() {
+        //todo: stub
+        return List.of(
+                new Game("First game", "111"),
+                new Game("Second game", "222"),
+                new Game("Third game", "333")
+        );
+    }
+
+    public static GameInfo getPlayerInfo() {
+        //todo: stub
+        return new GameInfo(
+                List.of(new Card(6, Suit.SPADE), new Card(8, Suit.CLUB)),
+                List.of(new Card(11, Suit.HEART), new Card(3, Suit.DIAMOND)),
+                PlayerState.PLAYER_MOVE
+        );
     }
 }

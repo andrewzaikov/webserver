@@ -39,7 +39,7 @@ public class SessionManager {
 
         long currentsTime = System.currentTimeMillis();
         // 30 sec
-        data.isAlive = (currentsTime - data.lastUpdate) <= 30000;
+        data.isAlive = (currentsTime - data.lastUpdate) <= 60*1000;
         data.lastUpdate = currentsTime;
         // update session data
         SESSION_DATA_MAP.put(sessionId, data);
