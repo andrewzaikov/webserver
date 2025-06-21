@@ -20,6 +20,7 @@ public class MyRestController {
             @RequestParam(value = "lastName") String lastName
     ) {
         System.out.println("Register player: "+firstName+' '+lastName);
+        MyRepository.register();
         return SessionManager.register();
     }
 
@@ -42,11 +43,21 @@ public class MyRestController {
         if (!SessionManager.checkSession(session)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Session is not valid");
         }
-        if (!id.equals("111") && !id.equals("222") && !id.equals("333")) {
+        if (!MyRepository.gameExists(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Game with gameId="+id+" not found!");
         }
         System.out.println("Session "+session+" joins the game "+id);
-        //todo: join player 'session' to game 'gameId'
+        MyRepository.joinGame(id);
+    }
+
+    @PostMapping("/startGame")
+    public String startGame(
+            @RequestParam(value = "session") String session
+    ) {
+        if (!SessionManager.checkSession(session)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Session is not valid");
+        }
+        return MyRepository.startGame();
     }
 
     @GetMapping("/gameList")
@@ -60,15 +71,34 @@ public class MyRestController {
         return MyRepository.gameList();
     }
 
-    //todo: rework
-    @GetMapping("/size")
-    public int size(
+    @PostMapping("/takeCard")
+    public void takeCard(
             @RequestParam(value = "session") String session
     ) {
         if (!SessionManager.checkSession(session)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Session is not valid");
         }
-        return MyRepository.size();
+        MyRepository.takeCard();
+    }
+
+    @PostMapping("/passMove")
+    public void passMove(
+            @RequestParam(value = "session") String session
+    ) {
+        if (!SessionManager.checkSession(session)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Session is not valid");
+        }
+        MyRepository.passMove();
+    }
+
+    @PostMapping("/stopGame")
+    public void stopGame(
+            @RequestParam(value = "session") String session
+    ) {
+        if (!SessionManager.checkSession(session)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Session is not valid");
+        }
+        MyRepository.stopGame();
     }
 
     @GetMapping("/stats")
